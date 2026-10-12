@@ -5,6 +5,24 @@ from backend.app.entidades.estado import Estado
 from backend.app.entidades.transicao import Transicao
 from backend.app.erros import OperacaoInvalidaError
 from backend.app.servicos.operacoes import complemento
+from backend.app.utilitarios.utilitario_jff import UtilitarioJff
+
+
+def test_ler_aceita_coordenadas_decimais_do_jflap():
+    conteudo = (
+        b'<?xml version="1.0" encoding="UTF-8"?>'
+        b"<structure><type>fa</type><automaton>"
+        b'<state id="0" name="q0"><x>484.0</x><y>278.0</y></state>'
+        b'<state id="1" name="q1"><x>653.0</x><y>279.0</y><final/></state>'
+        b"</automaton></structure>"
+    )
+
+    automato = UtilitarioJff.ler(conteudo)
+
+    assert [(estado.id, estado.x, estado.y) for estado in automato.estados] == [
+        (0, 484, 278),
+        (1, 653, 279),
+    ]
 
 
 def test_complemento_de_afd_completo_inverte_finais():

@@ -38,8 +38,8 @@ class UtilitarioJff:
                 nome = elemento.get("name")
                 inicial = elemento.find("initial") is not None
                 final = elemento.find("final") is not None
-                x = int(elemento.find("x").text)
-                y = int(elemento.find("y").text)
+                x = int(float(elemento.find("x").text))
+                y = int(float(elemento.find("y").text))
 
                 estados.append(Estado(id_estado, nome, inicial, final, x, y))
 

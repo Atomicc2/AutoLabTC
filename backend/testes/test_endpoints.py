@@ -38,6 +38,28 @@ def test_executar_complemento_com_sucesso(criar_jff):
     assert b"<structure>" in resposta.content
 
 
+def test_executa_complemento_com_arquivo_jflap():
+    conteudo = (
+        b'<?xml version="1.0" encoding="UTF-8" standalone="no"?>'
+        b"<!--Created with JFLAP 6.4.--><structure><type>fa</type><automaton>"
+        b'<state id="0" name="q0"><x>484.0</x><y>278.0</y></state>'
+        b'<state id="1" name="q1"><x>653.0</x><y>279.0</y><final/></state>'
+        b"<transition><from>0</from><to>0</to><read>a</read></transition>"
+        b"<transition><from>0</from><to>1</to><read>b</read></transition>"
+        b"<transition><from>1</from><to>1</to><read>b</read></transition>"
+        b"<transition><from>1</from><to>0</to><read>a</read></transition>"
+        b"</automaton></structure>"
+    )
+
+    resposta = cliente.post(
+        "/operacoes/complemento",
+        files={"arquivo": ("afd_default.jff", conteudo, "application/xml")},
+    )
+
+    assert resposta.status_code == 200
+    assert "afd_default_complemento.jff" in resposta.headers["content-disposition"]
+
+
 def test_rejeita_extensao_diferente_de_jff(criar_jff):
     conteudo = criar_jff(AFD_COMPLETO, TRANSICOES_AFD)
 
