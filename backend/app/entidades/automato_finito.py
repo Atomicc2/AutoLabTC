@@ -1,5 +1,7 @@
 from copy import deepcopy
-from backend.app.entidades import Estado, Transicao
+
+from backend.app.entidades.estado import Estado
+from backend.app.entidades.transicao import Transicao
 
 
 class AutomatoFinito:
@@ -21,6 +23,9 @@ class AutomatoFinito:
             for transicao in self.transicoes:
                 if transicao.simbolo is not None and transicao.simbolo != "":
                     self.alfabeto.add(transicao.simbolo)
+
+    def copiar(self):
+        return deepcopy(self)
 
     def eh_afd(self):
         vistas = set()
