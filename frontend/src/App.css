@@ -1,0 +1,65 @@
+.container {
+  width: 100%;
+  max-width: 480px;
+  padding: 32px;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.08);
+}
+
+h1 {
+  margin: 0 0 4px;
+  font-size: 1.6rem;
+}
+
+.subtitulo {
+  margin: 0 0 24px;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 18px;
+  font-size: 0.9rem;
+}
+
+.campo span {
+  font-weight: 600;
+}
+
+input[type='file'],
+select {
+  padding: 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background-color: #2563eb;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+}
+
+.erro {
+  margin: 18px 0 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background-color: #fee2e2;
+  color: #b91c1c;
+  font-size: 0.9rem;
+}
