@@ -4,7 +4,7 @@ from backend.app.entidades import Estado, Transicao
 
 class AutomatoFinito:
 
-    def __init__(self, estados: list["Estado"] | None = None, transicoes: list["Transicao"] | None = None, alfabeto: set[str] | None = None):
+    def __init__(self, estados: list[Estado] | None = None, transicoes: list[Transicao] | None = None, alfabeto: set[str] | None = None):
         self.estados = []
         self.transicoes = []
         self.alfabeto = set()
