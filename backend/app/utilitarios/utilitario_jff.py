@@ -1,41 +1,72 @@
-import xml.etree.ElementTree as ElementTree
+from xml.etree import ElementTree
 
-from app.entidades import Estado, Transicao
-from app.automato import AutomatoFinito
+from defusedxml import ElementTree as DefusedElementTree
+from defusedxml.common import DefusedXmlException
+
+from backend.app.entidades.automato_finito import AutomatoFinito
+from backend.app.entidades.estado import Estado
+from backend.app.entidades.transicao import Transicao
+from backend.app.erros import ArquivoInvalidoError
 
 
 class UtilitarioJff:
 
     @staticmethod
     def ler(conteudo):
-        raiz = ElementTree.fromstring(conteudo)
+        if not conteudo:
+            raise ArquivoInvalidoError("O arquivo .jff está vazio.")
+
+        try:
+            raiz = DefusedElementTree.fromstring(conteudo)
+        except (ElementTree.ParseError, DefusedXmlException, ValueError) as erro:
+            raise ArquivoInvalidoError("O arquivo .jff não contém um XML válido.") from erro
+
+        if raiz.tag != "structure":
+            raise ArquivoInvalidoError("O arquivo .jff não possui a tag <structure>.")
+
+        automaton = raiz.find("automaton")
+        if automaton is None:
+            raise ArquivoInvalidoError("O arquivo .jff não possui a tag <automaton>.")
 
         estados = []
         transicoes = []
         alfabeto = set()
 
-        for elemento in raiz.iter("state"):
-            id_estado = int(elemento.get("id"))
-            nome = elemento.get("name")
-            inicial = elemento.find("initial") is not None
-            final = elemento.find("final") is not None
-            x = int(elemento.find("x").text)
-            y = int(elemento.find("y").text)
+        try:
+            for elemento in automaton.iter("state"):
+                id_estado = int(elemento.get("id"))
+                nome = elemento.get("name")
+                inicial = elemento.find("initial") is not None
+                final = elemento.find("final") is not None
+                x = int(elemento.find("x").text)
+                y = int(elemento.find("y").text)
 
-            estados.append(Estado(id_estado, nome, inicial, final, x, y))
+                estados.append(Estado(id_estado, nome, inicial, final, x, y))
 
-        for elemento in raiz.iter("transition"):
-            de = int(elemento.find("from").text)
-            para = int(elemento.find("to").text)
+            for elemento in automaton.iter("transition"):
+                de = int(elemento.find("from").text)
+                para = int(elemento.find("to").text)
 
-            simbolo = elemento.find("read").text
-            if simbolo is None:
-                simbolo = ""
+                no_simbolo = elemento.find("read")
+                if no_simbolo is None:
+                    raise ArquivoInvalidoError(
+                        "Uma transição do arquivo .jff não possui a tag <read>."
+                    )
 
-            if simbolo != "":
-                alfabeto.add(simbolo)
+                simbolo = no_simbolo.text
+                if simbolo is None:
+                    simbolo = ""
 
-            transicoes.append(Transicao(de, para, simbolo))
+                if simbolo != "":
+                    alfabeto.add(simbolo)
+
+                transicoes.append(Transicao(de, para, simbolo))
+        except ArquivoInvalidoError:
+            raise
+        except (TypeError, ValueError, AttributeError) as erro:
+            raise ArquivoInvalidoError(
+                "O arquivo .jff possui campos inválidos ou tags obrigatórias ausentes."
+            ) from erro
 
         return AutomatoFinito(estados, transicoes, alfabeto)
 
