@@ -1,0 +1,91 @@
+@startuml AutoLabTC_Detailed_Architecture
+!define COMPONENT component
+skinparam shadowing false
+skinparam backgroundColor #FFFFFF
+skinparam componentStyle uml2
+
+title AutoLabTC - Detailed Architecture (Current Implementation)
+
+' Presentation Layer
+package "Presentation Layer" {
+  component [React App\n(App.tsx)] as UI
+  component [API Client\n(api.ts)] as API
+}
+
+' API Layer
+package "API Layer (FastAPI)" {
+  component [FastAPI App\n(main.py)] as FastAPIApp
+  component [Operations Router\n(rotas/operacoes.py)] as Router
+  component [Domain Exception Handler\n(main.py)] as ErrorHandler
+}
+
+' Business Layer
+package "Business Layer" {
+  component [Operations Service\n(servicos/operacoes.py)] as Service
+  component [Operation Registry\n(@registrar decorator)] as Registry
+  note right of Registry
+    Currently registered:
+    - complemento (complement)
+  end note
+}
+
+' Domain Layer
+package "Domain Layer" {
+  class AutomatoFinito {
+    +estados: list[Estado]
+    +transicoes: list[Transicao]
+    +alfabeto: set[str]
+    +copiar()
+    +eh_afd()
+    +eh_completo()
+  }
+  class Estado {
+    +id: int
+    +nome: str
+    +inicial: bool
+    +final: bool
+    +x: int
+    +y: int
+  }
+  class Transicao {
+    +de: int
+    +para: int
+    +simbolo: str|None
+  }
+}
+
+' Infrastructure Layer
+package "Infrastructure Layer" {
+  component [JFF Utility\n(utilitarios/utilitario_jff.py)] as JFFUtil
+  class DomainError {
+    +status: int
+    +mensagem: str
+  }
+  class ArquivoInvalidoError
+  class OperacaoNaoEncontradaError
+  class OperacaoInvalidaError
+}
+
+' Cross-cutting
+component [CORS Middleware] as CORS
+component [JFLAP .jff Files] as JFFFiles
+
+' Relationships
+UI --> API : fetch requests
+API --> FastAPIApp : HTTP/REST\nmultipart/form-data
+FastAPIApp --> CORS
+FastAPIApp --> ErrorHandler
+FastAPIApp --> Router
+Router --> Service : calls OPERACOES[name]()
+Service --> Registry : uses registry pattern
+Service --> AutomatoFinito : creates/manipulates
+AutomatoFinito *-- Estado
+AutomatoFinito *-- Transicao
+Router --> JFFUtil : read(conteudo)\nescrever(automato)
+JFFUtil --> JFFFiles : parse XML\ngenerate XML (JFLAP format)
+Service --> OperacaoInvalidaError : throws
+Router --> ArquivoInvalidoError
+Router --> OperacaoNaoEncontradaError
+ErrorHandler --> DomainError
+
+@enduml

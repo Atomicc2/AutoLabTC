@@ -1,78 +1,97 @@
 # AutoLab-TC
 
-Plataforma computacional para construção, transformação e manipulação de autômatos finitos, integrada ao JFLAP.
+Plataforma web para construção, transformação e manipulação de autômatos finitos, com integração a arquivos `.jff` do JFLAP.
 
-## Status
+A aplicação permite enviar um autômato finito, selecionar uma operação e baixar o resultado no formato `.jff`.
 
-**Em fase de planejamento e definição da arquitetura.**
+## Funcionalidades
 
-Neste momento, o projeto ainda não possui implementação. A equipe está discutindo a arquitetura, tecnologias, módulos e fluxo de funcionamento da aplicação.
+- Importação de autômatos via arquivos `.jff`;
+- Listagem das operações disponíveis na API;
+- Operações sobre autômatos finitos (atualmente: **complemento**);
+- Exportação do resultado em `.jff` para uso no JFLAP.
 
-## Objetivo
+## Tecnologias
 
-Desenvolver uma ferramenta web voltada ao estudo de Linguagens Formais e Teoria da Computação, permitindo trabalhar com:
+- **Backend:** Python 3.12 + FastAPI + Uvicorn;
+- **Frontend:** React 19 + TypeScript + Vite;
+- **Testes:** Pytest (backend);
+- **Lint:** Ruff (backend) e Oxlint (frontend).
 
-- Expressões Regulares (ER);
-- Autômatos Finitos Não Determinísticos (AFN);
-- Autômatos Finitos Determinísticos (AFD);
-- Arquivos `.jff` do JFLAP;
-- Operações e transformações sobre autômatos;
-- Visualização dos algoritmos passo a passo.
-
-Um dos principais objetivos é permitir que o usuário acompanhe as **etapas intermediárias dos algoritmos**, e não apenas o resultado final.
-
-## Arquitetura em discussão
-
-A arquitetura atualmente proposta é composta por:
+## Estrutura
 
 ```text
-Frontend
-React / Angular
-       │
-       │ HTTP / REST
-       ▼
-Backend
-Spring Boot
-       │
-       ├── Parser XML (.jff)
-       │
-       ├── Módulo de Expressões Regulares
-       │       ├── Lexer
-       │       ├── Parser
-       │       └── AST
-       │
-       ├── Automata Core
-       │       ├── AFN
-       │       ├── AFD
-       │       └── Operações
-       │
-       └── Trace Module
-               │
-               ├── Visualização das etapas
-               └── Geração de gabarito/PDF
+AutoLabTC/
+├── backend/            # API FastAPI
+│   ├── app/
+│   │   ├── entidades/  # Estado, Transição, Autômato Finito
+│   │   ├── rotas/      # Endpoints HTTP
+│   │   ├── servicos/   # Regras de negócio / operações
+│   │   └── utilitarios/# Leitura e escrita de arquivos .jff
+│   ├── testes/         # Testes automatizados
+│   └── requirements*.txt
+└── frontend/           # Interface React + Vite
+    └── src/
 ```
 
-A arquitetura ainda está sujeita a alterações durante o desenvolvimento e as próximas reuniões da equipe.
+## Pré-requisitos
 
-## Principais funcionalidades planejadas
+- Python 3.12+
+- Node.js 20+ e npm
 
-- Importação de autômatos através de arquivos `.jff`;
-- Conversão de Expressões Regulares para AFN;
-- Operações sobre autômatos;
-- Conversão AFN → AFD;
-- Minimização de AFD;
-- Exportação para `.jff`;
-- Registro das etapas intermediárias dos algoritmos;
-- Visualização passo a passo;
-- Possível geração de PDF com as etapas do processo.
+## Como executar em ambiente de desenvolvimento
 
-## Tecnologias em estudo
+Os comandos do backend devem ser executados a partir da **raiz do projeto**.
 
-- **Frontend:** React ou Angular
-- **Backend:** Java + Spring Boot
-- **Banco de dados:** PostgreSQL, se necessário
-- **PDF:** Python + LaTeX, conforme necessidade definida no projeto
-- **Integração:** JFLAP / arquivos `.jff`
+### 1. Backend (API)
+
+Crie e ative o ambiente virtual, instale as dependências e suba o servidor:
+
+```bash
+python3 -m venv backend/.venv
+source backend/.venv/bin/activate
+pip install -r backend/requirements-dev.txt
+uvicorn backend.app.main:app --reload --port 8000
+```
+
+A API ficará disponível em `http://localhost:8000` (documentação interativa em `http://localhost:8000/docs`).
+
+### 2. Frontend (interface)
+
+Em outro terminal, instale as dependências e suba o servidor de desenvolvimento:
+
+```bash
+cd frontend
+npm install
+cp .env.example .env
+npm run dev
+```
+
+O frontend ficará disponível em `http://localhost:5173`.
+
+> Por padrão o frontend consome a API em `http://localhost:8000`, configurável pela variável `VITE_API_URL` no arquivo `frontend/.env`.
+
+## Testes
+
+Backend (a partir da raiz do projeto, com o ambiente virtual ativado):
+
+```bash
+pytest
+```
+
+Lint do frontend:
+
+```bash
+cd frontend
+npm run lint
+```
+
+## Endpoints
+
+| Método | Rota                 | Descrição                              |
+| ------ | -------------------- | -------------------------------------- |
+| GET    | `/operacoes`         | Lista as operações disponíveis         |
+| POST   | `/operacoes/{nome}`  | Executa uma operação sobre um `.jff`   |
 
 ## Projeto
 

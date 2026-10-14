@@ -1,0 +1,62 @@
+@startuml AutoLabTC_Architecture
+!define RECTANGLE class
+skinparam shadowing false
+skinparam defaultFontName "Helvetica"
+skinparam componentStyle rectangle
+
+title AutoLabTC - Architecture Diagram
+
+' Frontend
+package "Frontend (React + Vite + TypeScript)" {
+  [App.tsx] as App
+  [api.ts] as ApiClient
+}
+
+' Communication
+cloud "HTTP/REST (JSON + multipart/form-data)" as HTTP
+
+' Backend
+package "Backend (FastAPI + Python)" {
+  [main.py] as Main
+  
+  package "Rotas (Routes)" {
+    [operacoes.py] as OperacoesRoute
+  }
+  
+  package "Serviços (Services)" {
+    [operacoes.py] as OperacoesService
+  }
+  
+  package "Entidades (Domain)" {
+    [automato_finito.py] as Automato
+    [estado.py] as Estado
+    [transicao.py] as Transicao
+  }
+  
+  package "Utilitários (Utilities)" {
+    [utilitario_jff.py] as UtilJFF
+  }
+  
+  package "Erros (Errors)" {
+    [erros.py] as Erros
+  }
+}
+
+' External
+database "File System (.jff)" as JFF
+
+' Relationships
+App --> ApiClient : uses
+ApiClient --> HTTP : POST/GET
+HTTP --> Main : requests
+Main --> OperacoesRoute : includes router
+OperacoesRoute --> OperacoesService : calls operations
+OperacoesService --> Automato : manipulates
+Automato --> Estado : contains
+Automato --> Transicao : contains
+OperacoesRoute --> UtilJFF : read/write .jff
+UtilJFF --> JFF : parse/generate XML
+OperacoesService --> Erros : throws domain errors
+Main --> Erros : handles with exception handler
+
+@enduml
