@@ -1,0 +1,6 @@
+-r requisitos.txt
+pytest
+pytest-asyncio
+httpx
+black
+ruff
