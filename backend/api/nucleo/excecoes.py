@@ -1,0 +1,2 @@
+class ErroAutomatoNaoEncontrado(Exception):
+    pass
