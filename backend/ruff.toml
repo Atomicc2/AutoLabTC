@@ -1,0 +1,3 @@
+# Módulos de domínio usam PascalCase (ex.: Estado.py), conforme tarefa do projeto.
+[lint]
+ignore = ["N999"]

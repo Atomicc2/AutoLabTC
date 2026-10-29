@@ -96,6 +96,17 @@ Como alguns membros utilizarão IA para codar, as seguintes regras são obrigat�
 
 ---
 
+## Restrição: aprendizado em primeiro lugar
+
+O intuito do projeto é **acima de tudo aprendizado**. Por isso, toda alteração feita com auxílio de IA deve seguir:
+
+- **Dividir em pequenas partes**: não entregar blocos grandes de código de uma vez. Implementar passo a passo, em mudanças pequenas e revisáveis.
+- **Explicar o que está sendo feito**: cada alteração deve vir acompanhada de uma explicação clara do que foi feito e por quê.
+- **Explicar as tecnologias novas**: sempre que uma biblioteca, padrão ou tecnologia nova for introduzida, explicar o que ela é, para que serve e como funciona no contexto do projeto.
+- **Não "jogar código pronto"**: a IA deve servir como apoio ao aprendizado, não como substituto do entendimento do membro da equipe.
+
+---
+
 ## 6. Estrutura Detalhada de Pastas
 
 ```
