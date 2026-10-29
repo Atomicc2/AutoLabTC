@@ -27,37 +27,44 @@ O projeto é dividido em duas partes principais: **backend** (FastAPI em Python)
 
 ```
 AutoLabTC/
+├── AGENT.md                     # convenções e fluxo de trabalho da equipe
+├── README.md
 ├── backend/
 │   ├── api/
 │   │   ├── main.py              # ponto de entrada (inicia o FastAPI)
 │   │   ├── rotas/               # camada de apresentação (endpoints)
+│   │   │   ├── __init__.py
 │   │   │   └── automatos.py
 │   │   ├── servicos/            # camada de negócio (regras da aplicação)
+│   │   │   ├── __init__.py
 │   │   │   └── automato_service.py
-│   │   └── nucleo/              # classes gerais (configurações, exceções)
-│   │       ├── configuracao.py
-│   │       └── excecoes.py
-│   ├── testes/
+│   │   ├── nucleo/              # exceções gerais (ex.: ErroAutomatoNaoEncontrado)
+│   │   │   ├── __init__.py
+│   │   │   └── excecoes.py
+│   │   └── configuracoes/       # configurações e variáveis de ambiente (.env)
+│   │       ├── __init__.py
+│   │       └── configuracao.py
+│   ├── testes/                  # testes pytest (a ser preenchido)
 │   ├── requisitos.txt           # dependências de produção
 │   ├── requisitos-dev.txt       # dependências de desenvolvimento
-│   └── .env                     # variáveis de ambiente
+│   ├── .env                     # variáveis de ambiente (local, não versionar)
+│   └── .venv/                   # ambiente virtual (local, não versionar)
 ├── frontend/
-│   └── src/
-│       ├── main.tsx             # ponto de entrada do React
-│       ├── App.tsx              # componente raiz
-│       ├── App.css
-│       ├── index.css
-│       ├── assets/              # recursos e imagens
-│       ├── servicos/            # chamadas HTTP ao backend
-│       │   └── automatoApi.ts
-│       ├── componentes/         # componentes de tela
-│       │   └── automatos/
-│       ├── paginas/             # páginas/rotas da aplicação
-│       │   ├── Inicio.tsx
-│       │   └── Automatos.tsx
-│       ├── tipos/               # interfaces TypeScript
-│       │   └── automato.ts
-└── README.md
+│   ├── src/
+│   │   ├── main.tsx             # ponto de entrada do React
+│   │   ├── App.tsx              # componente raiz (template inicial do Vite)
+│   │   ├── App.css
+│   │   ├── index.css
+│   │   ├── assets/              # recursos e imagens
+│   │   ├── componentes/         # componentes de tela
+│   │   │   └── automatos/       # .gitkeep (vazio por enquanto)
+│   │   ├── paginas/             # páginas/rotas (vazio por enquanto)
+│   │   ├── servicos/            # chamadas HTTP ao backend (vazio por enquanto)
+│   │   └── tipos/               # interfaces TypeScript (vazio por enquanto)
+│   ├── package.json
+│   ├── vite.config.ts
+│   └── tsconfig.json
+└── .gitignore
 ```
 
 ### Como as camadas se comunicam
@@ -65,16 +72,19 @@ AutoLabTC/
 O fluxo de dados segue este caminho:
 
 1. **React (páginas e componentes)** → interage com o usuário.
-3. **Serviços (servicos)** → fazem chamadas HTTP para o backend.
-4. **Rotas (api/rotas)** → recebem as requisições no backend.
-5. **Serviços (api/servicos)** → aplicam as regras de negócio.
-6. **Núcleo (api/nucleo)** → fornece configurações e exceções gerais.
+2. **Serviços (servicos)** → fazem chamadas HTTP para o backend.
+3. **Rotas (api/rotas)** → recebem as requisições no backend.
+4. **Serviços (api/servicos)** → aplicam as regras de negócio.
+5. **Núcleo (api/nucleo)** → fornece exceções gerais.
+6. **Configurações (api/configuracoes)** → lê variáveis de ambiente (.env).
+
+> **Nota:** o frontend ainda está no template inicial do Vite. As pastas `paginas`, `servicos`, `tipos` e `componentes/automatos` estão vazias (`.gitkeep`) e serão preenchidas conforme as tarefas do Trello. A visualização passo a passo dos algoritmos será feita via **PDF gerado com `pylatex`** no backend, não na página web.
 
 ## Tecnologias
 
 - **Frontend:** React 19 + TypeScript + Vite
 - **Backend:** FastAPI + Python 3.12
-- **PDF:** Python + LaTeX, conforme necessidade definida no projeto
+- **PDF:** Python + `pylatex` (geração das etapas dos algoritmos)
 - **Integração:** JFLAP / arquivos `.jff`
 
 ## Principais funcionalidades planejadas
@@ -86,8 +96,7 @@ O fluxo de dados segue este caminho:
 - Minimização de AFD;
 - Exportação para `.jff`;
 - Registro das etapas intermediárias dos algoritmos;
-- Visualização passo a passo;
-- Possível geração de PDF com as etapas do processo.
+- Geração de PDF com as etapas do processo (via `pylatex` no backend).
 
 ## Como clonar o repositório
 
