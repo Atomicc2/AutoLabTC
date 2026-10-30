@@ -1,10 +1,11 @@
-import InputAutomato from '../componentes/input-automato'
+import BotaoImportarJff from '../componentes/botao-importar-jff'
 
 function PaginaInicial() {
-
   return (
     <>
-      <InputAutomato/>
+      <main>
+        <BotaoImportarJff />
+      </main>
     </>
   )
 }
