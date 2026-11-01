@@ -1,11 +1,11 @@
 import './pagina-inicial.css'
-import BotaoImportarJff from '../componentes/botao-importar-jff'
+import FormularioOperacao from '../componentes/formulario-operacao'
 
 function PaginaInicial() {
   return (
     <>
       <main>
-        <BotaoImportarJff />
+        <FormularioOperacao />
       </main>
     </>
   )
