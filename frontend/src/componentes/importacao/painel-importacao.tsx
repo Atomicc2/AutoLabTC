@@ -48,7 +48,7 @@ function PainelImportacao() {
   }
 
   return (
-    <article className="painel-importacao">
+    <section className="painel-importacao">
       <ul>
         {slots.map((slot, posicao) => (
           <li key={posicao}>
@@ -61,7 +61,7 @@ function PainelImportacao() {
           </li>
         ))}
       </ul>
-    </article>
+    </section>
   );
 }
 

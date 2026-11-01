@@ -4,10 +4,10 @@ import PainelSelecao from "./selecao/painel-selecao";
 
 function FormularioOperacao() {
   return (
-    <section className="formulario-operacao">
+    <article className="formulario-operacao">
       <PainelImportacao />
       <PainelSelecao />
-    </section>
+    </article>
   )
 }
 

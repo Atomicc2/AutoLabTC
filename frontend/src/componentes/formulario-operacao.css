@@ -1,4 +1,4 @@
-section.formulario-operacao {
+article.formulario-operacao {
   display: flex;
   gap: var(--espacamento-120);
 }
