@@ -14,4 +14,62 @@
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
+
+ /* Fundos */
+    --fundo-vazio: #14100D;
+    --fundo-base: #1E1813;
+    --fundo-superficie: #2B2219;
+    --fundo-elevado: #3A2E22;
+    --fundo-hover: #4A3B2C;
+
+    /* Tons de café */
+    --cafe-50: #EFE8DE;
+    --cafe-100: #DDD2C4;
+    --cafe-200: #C4B5A3;
+    --cafe-300: #9C8873;
+    --cafe-400: #7A6450;
+    --cafe-500: #5C4A38;
+    --cafe-600: #3A2E22;
+    --cafe-700: #2B2219;
+    --cafe-800: #1E1813;
+    --cafe-900: #14100D;
+    --cafe-950: #0D0A07;
+
+    /* Tons de caramelo */
+    --caramelo-50: #FEF8EC;
+    --caramelo-100: #FDEED1;
+    --caramelo-200: #FBDDA8;
+    --caramelo-300: #F9CB7A;
+    --caramelo-400: #F7B84D;
+    --caramelo-500: #F5A623;
+    --caramelo-600: #E08A1E;
+    --caramelo-700: #B86A00;
+    --caramelo-800: #8A4E00;
+    --caramelo-900: #5C3300;
+    --caramelo-950: #3D2200;
+
+    /* Cores de destaque */
+    --acento-base: #F5A623;
+    --acento-hover: #F7B84D;
+    --acento-premido: #E08A1E;
+
+    /* Textos */
+    --texto-primario: #EFE8DE;
+    --texto-secundario: #C4B5A3;
+    --texto-esbatido: #9C8873;
+    --texto-desativado: #5C4A38;
+    --texto-sobre-acento: #14100D;
+
+    /* Bordas */
+    --borda-subtil: #2B2219;
+    --borda-padrao: #3A2E22;
+    --borda-forte: #5C4A38;
+    --borda-acento: #E08A1E;
+    --borda-foco: #F5A623;
+
+    /* Estados */
+    --estado-sucesso: #8FA876;
+    --estado-aviso: #F5A623;
+    --estado-perigo: #C46A5A;
+    --estado-informacao: #7FA0A8;
 }
