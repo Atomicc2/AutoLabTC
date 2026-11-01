@@ -1,3 +1,4 @@
+import './pagina-inicial.css'
 import BotaoImportarJff from '../componentes/botao-importar-jff'
 
 function PaginaInicial() {

@@ -1,35 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
-body {
-  margin: 0;
-  padding: 0;
-  background: var(--fundo-vazio);
-  font-family: 'Inter', sans-serif;
-}
-
-.botao-upload{
+button {
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:10px;
 
-  background-color: var(--caramelo-500);
-  
-  cursor: pointer; 
-  padding: 15px 25px;
+  gap:var(--espacamento-16);
+  padding: var(--espacamento-12) var(--espacamento-32);
   border-radius: 10px;
   border: 2px solid var(--borda-acento);
 
-  width: 250px;
-  height: 25px;
+  background-color: var(--caramelo-500);
+  transition-duration: .3s;
 }
 
-.botao-upload strong{
+button:hover {
+  background-color: var(--caramelo-400);
+  cursor: pointer; 
+}
+
+button span {
+  font-family: var(--fonte-secundaria);
+  font-size: var(--tamanho-18);
+  font-weight: var(--peso-semibold);
   color: var(--caramelo-900);
-  font-size: 18px;
 }
 
-.botao-upload img{
-  width: 25px;
+button img {
+  width: 26px;
   height: 25px;
 }
