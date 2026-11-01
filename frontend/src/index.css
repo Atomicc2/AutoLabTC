@@ -1,75 +1,104 @@
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  /* ========================================
+     TIPOGRAFIA
+  ======================================== */
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  /* famílias tipográficas */
+  --fonte-primaria: "Plus Jakarta Sans", sans-serif;
+  --fonte-secundaria: "Inter", sans-serif;
 
- /* Fundos */
-    --fundo-vazio: #14100D;
-    --fundo-base: #1E1813;
-    --fundo-superficie: #2B2219;
-    --fundo-elevado: #3A2E22;
-    --fundo-hover: #4A3B2C;
+  /* pesos tipográficos */
+  --peso-regular: 400;
+  --peso-medio: 500;
+  --peso-semibold: 600;
+  --peso-negrito: 700;
 
-    /* Tons de café */
-    --cafe-50: #EFE8DE;
-    --cafe-100: #DDD2C4;
-    --cafe-200: #C4B5A3;
-    --cafe-300: #9C8873;
-    --cafe-400: #7A6450;
-    --cafe-500: #5C4A38;
-    --cafe-600: #3A2E22;
-    --cafe-700: #2B2219;
-    --cafe-800: #1E1813;
-    --cafe-900: #14100D;
-    --cafe-950: #0D0A07;
+  /* tamanhos tipográficos */
+  --tamanho-48: 3rem; /* 48px */
+  --tamanho-36: 2.25rem; /* 36px */
+  --tamanho-28: 1.75rem; /* 28px */
+  --tamanho-22: 1.375rem; /* 22px */
+  --tamanho-18: 1.125rem; /* 18px */
+  --tamanho-16: 1rem; /* 16px */
+  --tamanho-14: 0.875rem; /* 14px */
+  --tamanho-12: 0.75rem; /* 12px */
 
-    /* Tons de caramelo */
-    --caramelo-50: #FEF8EC;
-    --caramelo-100: #FDEED1;
-    --caramelo-200: #FBDDA8;
-    --caramelo-300: #F9CB7A;
-    --caramelo-400: #F7B84D;
-    --caramelo-500: #F5A623;
-    --caramelo-600: #E08A1E;
-    --caramelo-700: #B86A00;
-    --caramelo-800: #8A4E00;
-    --caramelo-900: #5C3300;
-    --caramelo-950: #3D2200;
+  /* ========================================
+     CORES
+  ======================================== */
 
-    /* Cores de destaque */
-    --acento-base: #F5A623;
-    --acento-hover: #F7B84D;
-    --acento-premido: #E08A1E;
+  /* Fundos */
+  --fundo-vazio: #14100d;
+  --fundo-base: #1e1813;
+  --fundo-superficie: #2b2219;
+  --fundo-elevado: #3a2e22;
+  --fundo-hover: #4a3b2c;
 
-    /* Textos */
-    --texto-primario: #EFE8DE;
-    --texto-secundario: #C4B5A3;
-    --texto-esbatido: #9C8873;
-    --texto-desativado: #5C4A38;
-    --texto-sobre-acento: #14100D;
+  /* Tons de café */
+  --cafe-50: #efe8de;
+  --cafe-100: #ddd2c4;
+  --cafe-200: #c4b5a3;
+  --cafe-300: #9c8873;
+  --cafe-400: #7a6450;
+  --cafe-500: #5c4a38;
+  --cafe-600: #3a2e22;
+  --cafe-700: #2b2219;
+  --cafe-800: #1e1813;
+  --cafe-900: #14100d;
+  --cafe-950: #0d0a07;
 
-    /* Bordas */
-    --borda-subtil: #2B2219;
-    --borda-padrao: #3A2E22;
-    --borda-forte: #5C4A38;
-    --borda-acento: #E08A1E;
-    --borda-foco: #F5A623;
+  /* Tons de caramelo */
+  --caramelo-50: #fef8ec;
+  --caramelo-100: #fdeed1;
+  --caramelo-200: #fbdda8;
+  --caramelo-300: #f9cb7a;
+  --caramelo-400: #f7b84d;
+  --caramelo-500: #f5a623;
+  --caramelo-600: #e08a1e;
+  --caramelo-700: #b86a00;
+  --caramelo-800: #8a4e00;
+  --caramelo-900: #5c3300;
+  --caramelo-950: #3d2200;
 
-    /* Estados */
-    --estado-sucesso: #8FA876;
-    --estado-aviso: #F5A623;
-    --estado-perigo: #C46A5A;
-    --estado-informacao: #7FA0A8;
+  /* Cores de destaque */
+  --acento-base: #f5a623;
+  --acento-hover: #f7b84d;
+  --acento-premido: #e08a1e;
+
+  /* Textos */
+  --texto-primario: #efe8de;
+  --texto-secundario: #c4b5a3;
+  --texto-esbatido: #9c8873;
+  --texto-desativado: #5c4a38;
+  --texto-sobre-acento: #14100d;
+
+  /* Bordas */
+  --borda-subtil: #2b2219;
+  --borda-padrao: #3a2e22;
+  --borda-forte: #5c4a38;
+  --borda-acento: #e08a1e;
+  --borda-foco: #f5a623;
+
+  /* Estados */
+  --estado-sucesso: #8fa876;
+  --estado-aviso: #f5a623;
+  --estado-perigo: #c46a5a;
+  --estado-informacao: #7fa0a8;
+
+  /* ========================================
+     ESPAÇAMENTOS
+  ======================================== */
+
+  --espacamento-4: 0.25rem; /* 4px */
+  --espacamento-8: 0.5rem; /* 8px */
+  --espacamento-12: 0.75rem; /* 12px */
+  --espacamento-16: 1rem; /* 16px */
+  --espacamento-20: 1.25rem; /* 20px */
+  --espacamento-24: 1.5rem; /* 24px */
+  --espacamento-32: 2rem; /* 32px */
+  --espacamento-48: 3rem; /* 48px */
+  --espacamento-64: 4rem; /* 64px */
+  --espacamento-80: 5rem; /* 80px */
+  --espacamento-96: 6rem; /* 96px */
+  --espacamento-120: 7.5rem; /* 120px */
 }
