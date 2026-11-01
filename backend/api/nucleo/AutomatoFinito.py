@@ -1,3 +1,4 @@
+import copy
 from dataclasses import dataclass, field
 
 from api.nucleo.Estado import Estado
@@ -38,3 +39,38 @@ class AutomatoFinito:
                 raise ValueError("Transição referencia estado inexistente.")
             if t.simbodo is not None and t.simbodo not in self.alfabeto:
                 raise ValueError(f"Símbodo '{t.simbodo}' não pertence ao alfabeto.")
+
+    def copiar(self) -> "AutomatoFinito":
+        """Retorna uma cópia profunda do autômato."""
+        return copy.deepcopy(self)
+
+    def eh_afd(self) -> bool:
+        """Verifica se o autômato é determinístico.
+
+        Um AFD não possui transições épsilon (``simbodo is None``) e não possui
+        duas transições com a mesma origem e o mesmo símbodo.
+        """
+        if self.estado_inicial is None:
+            return False
+        vistos: set[tuple[Estado, str | None]] = set()
+        for transicao in self.transicoes:
+            if transicao.simbodo is None:
+                return False
+            chave = (transicao.origem, transicao.simbodo)
+            if chave in vistos:
+                return False
+            vistos.add(chave)
+        return True
+
+    def eh_completo(self) -> bool:
+        """Verifica se o autômato é completo (toda origem tem transição para
+        todo símbodo do alfabeto)."""
+        existentes: set[tuple[Estado, str | None]] = set()
+        for transicao in self.transicoes:
+            if transicao.simbodo is not None:
+                existentes.add((transicao.origem, transicao.simbodo))
+        for estado in self.estados:
+            for simbodo in self.alfabeto:
+                if (estado, simbodo) not in existentes:
+                    return False
+        return True
