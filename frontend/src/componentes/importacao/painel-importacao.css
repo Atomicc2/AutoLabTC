@@ -1,0 +1,7 @@
+.painel-importacao ul {
+  display: flex;
+  gap: var(--espacamento-48);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}

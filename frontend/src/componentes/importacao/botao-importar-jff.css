@@ -1,0 +1,33 @@
+.botao-importar button {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  gap:var(--espacamento-16);
+  padding: var(--espacamento-12) var(--espacamento-32);
+  border-radius: 10px;
+  border: 2px solid var(--borda-acento);
+  margin-bottom: var(--espacamento-12);
+  min-width: 275px;
+
+  background-color: var(--caramelo-500);
+  transition-duration: .3s;
+}
+
+.botao-importar button:hover {
+  background-color: var(--caramelo-400);
+  cursor: pointer;
+}
+
+.botao-importar button span {
+  font-family: var(--fonte-secundaria);
+  font-size: var(--tamanho-18);
+  font-weight: var(--peso-semibold);
+  color: var(--caramelo-900);
+  white-space: nowrap;
+}
+
+.botao-importar button img {
+  width: 26px;
+  height: 25px;
+}
