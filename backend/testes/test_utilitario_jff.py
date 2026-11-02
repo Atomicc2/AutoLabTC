@@ -1,3 +1,6 @@
+import api.nucleo.AutomatoFinito
+import api.nucleo.Estado
+import api.nucleo.Transicao
 import api.nucleo.excecoes
 import api.nucleo.utilitarioJFF
 
@@ -167,3 +170,100 @@ def test_estado_sem_id(tmp_path):
         assert False, "deveria lançar ErroJFFInvalido"
     except api.nucleo.excecoes.ErroJFFInvalido:
         pass
+
+
+def construir_automato_teste():
+    q0 = api.nucleo.Estado.Estado("q0", inicial=True)
+    q1 = api.nucleo.Estado.Estado("q1", final=True)
+    automato = api.nucleo.AutomatoFinito.AutomatoFinito(
+        estados={q0, q1},
+        alfabeto={"a", "b"},
+        estado_inicial=q0,
+        estados_finais={q1},
+    )
+    automato.adicionar_transicao(api.nucleo.Transicao.Transicao(q0, "a", q0))
+    automato.adicionar_transicao(api.nucleo.Transicao.Transicao(q0, "b", q1))
+    automato.adicionar_transicao(api.nucleo.Transicao.Transicao(q1, "a", q1))
+    return automato
+
+
+def test_exportar_grava_arquivo(tmp_path):
+    automato = construir_automato_teste()
+    caminho = api.nucleo.utilitarioJFF.UtilitarioJFF.exportar(
+        automato, tmp_path / "saida.jff"
+    )
+    texto = caminho.read_text(encoding="utf-8")
+    assert texto.startswith('<?xml version="1.0"')
+    assert "<type>fa</type>" in texto
+    assert 'name="q0"' in texto
+
+
+def test_exportar_roundtrip(tmp_path):
+    automato = construir_automato_teste()
+    reconstruido = api.nucleo.utilitarioJFF.UtilitarioJFF.converter(
+        api.nucleo.utilitarioJFF.UtilitarioJFF.exportar(
+            automato, tmp_path / "roundtrip.jff"
+        )
+    )
+    reconstruido.validar()  # não deve lançar
+    assert reconstruido.estados == automato.estados
+    assert reconstruido.alfabeto == {"a", "b"}
+    assert reconstruido.estado_inicial == automato.estado_inicial
+    assert reconstruido.estados_finais == automato.estados_finais
+    assert sorted(
+        (t.origem.nome, t.simbodo, t.destino.nome) for t in reconstruido.transicoes
+    ) == sorted(
+        (t.origem.nome, t.simbodo, t.destino.nome) for t in automato.transicoes
+    )
+
+
+def test_exportar_transicao_epsilon(tmp_path):
+    q0 = api.nucleo.Estado.Estado("q0", inicial=True)
+    q1 = api.nucleo.Estado.Estado("q1", final=True)
+    automato = api.nucleo.AutomatoFinito.AutomatoFinito(
+        estados={q0, q1}, alfabeto=set(), estado_inicial=q0, estados_finais={q1}
+    )
+    automato.adicionar_transicao(api.nucleo.Transicao.Transicao(q0, None, q1))  # épsilon
+    reconstruido = api.nucleo.utilitarioJFF.UtilitarioJFF.converter(
+        api.nucleo.utilitarioJFF.UtilitarioJFF.exportar(
+            automato, tmp_path / "epsilon.jff"
+        )
+    )
+    assert reconstruido.transicoes == [api.nucleo.Transicao.Transicao(q0, None, q1)]
+    assert reconstruido.alfabeto == set()
+
+
+def test_exportar_usa_atributos_do_automato(tmp_path):
+    q0 = api.nucleo.Estado.Estado("q0")  # flags inicial/final ausentes
+    q1 = api.nucleo.Estado.Estado("q1")
+    automato = api.nucleo.AutomatoFinito.AutomatoFinito(
+        estados={q0, q1}, alfabeto={"a"}, estado_inicial=q0, estados_finais={q1}
+    )
+    automato.adicionar_transicao(api.nucleo.Transicao.Transicao(q0, "a", q1))
+    reconstruido = api.nucleo.utilitarioJFF.UtilitarioJFF.converter(
+        api.nucleo.utilitarioJFF.UtilitarioJFF.exportar(automato, tmp_path / "flags.jff")
+    )
+    assert reconstruido.estado_inicial.nome == "q0"
+    assert [e.nome for e in reconstruido.estados_finais] == ["q1"]
+
+
+def test_serializar_ordem_deterministica():
+    automato = construir_automato_teste()
+    texto = api.nucleo.utilitarioJFF.UtilitarioJFF.serializar(automato)
+    assert "<initial" in texto
+    assert "<final" in texto
+    assert texto.find('name="q0"') < texto.find('name="q1"')
+
+
+def test_exportar_automato_invalido(tmp_path):
+    automato = api.nucleo.AutomatoFinito.AutomatoFinito(
+        estados=set(), alfabeto=set(), estado_inicial=None
+    )
+    try:
+        api.nucleo.utilitarioJFF.UtilitarioJFF.exportar(
+            automato, tmp_path / "invalido.jff"
+        )
+        assert False, "deveria lançar ValueError"
+    except ValueError:
+        pass
+
