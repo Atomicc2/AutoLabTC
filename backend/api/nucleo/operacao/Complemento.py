@@ -51,37 +51,17 @@ class Etapa:
 def eh_afd(automato: AutomatoFinito) -> bool:
     """Verifica se ``automato`` é um AFD.
 
-    Um AFD não possui transições épsilon (``simbodo is None``) e não possui
-    duas transições com a mesma origem e o mesmo símbodo.
+    Delega para o método ``eh_afd`` de ``AutomatoFinito``.
     """
-    if (
-        automato.estado_inicial is None
-        or automato.estado_inicial not in automato.estados
-    ):
-        return False
-    vistos: set[tuple[Estado, str | None]] = set()
-    for transicao in automato.transicoes:
-        if transicao.simbodo is None:
-            return False
-        chave = (transicao.origem, transicao.simbodo)
-        if chave in vistos:
-            return False
-        vistos.add(chave)
-    return True
+    return automato.eh_afd()
 
 
 def eh_completo(automato: AutomatoFinito) -> bool:
-    """Verifica se ``automato`` é completo (toda origem tem transição para
-    todo símbodo do alfabeto)."""
-    existentes: set[tuple[Estado, str | None]] = set()
-    for transicao in automato.transicoes:
-        if transicao.simbodo is not None:
-            existentes.add((transicao.origem, transicao.simbodo))
-    for estado in automato.estados:
-        for simbodo in automato.alfabeto:
-            if (estado, simbodo) not in existentes:
-                return False
-    return True
+    """Verifica se ``automato`` é completo.
+
+    Delega para o método ``eh_completo`` de ``AutomatoFinito``.
+    """
+    return automato.eh_completo()
 
 
 def completar(automato: AutomatoFinito) -> AutomatoFinito:
