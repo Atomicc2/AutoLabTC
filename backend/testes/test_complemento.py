@@ -1,7 +1,7 @@
 from api.nucleo.AutomatoFinito import AutomatoFinito
 from api.nucleo.Estado import Estado
 from api.nucleo.excecoes import OperacaoInvalidaError
-from api.nucleo.operacao.Complemento import complemento, eh_completo
+from api.nucleo.operacao.Complemento import complemento
 from api.nucleo.Transicao import Transicao
 
 
@@ -41,7 +41,7 @@ def test_complemento_de_afd_incompleto_adiciona_poco_e_completa():
     resultado = complemento(automato)
 
     assert len(resultado.estados) == 3
-    assert eh_completo(resultado)
+    assert resultado.eh_completo()
 
     poco = next(e for e in resultado.estados if e.nome == "poço")
     assert poco.final is True
@@ -60,7 +60,7 @@ def test_complemento_de_afd_incompleto_adiciona_poco_e_completa():
     ]
     assert len(transicao_para_poco) == 1
 
-    assert not eh_completo(automato)
+    assert not automato.eh_completo()
 
 
 def test_complemento_rejeita_afn():

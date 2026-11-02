@@ -6,8 +6,6 @@ from api.nucleo.operacao.Complemento import (
     complemento,
     complemento_com_etapas,
     completar,
-    eh_afd,
-    eh_completo,
 )
 
 __all__ = [
@@ -16,6 +14,4 @@ __all__ = [
     "complemento",
     "complemento_com_etapas",
     "completar",
-    "eh_afd",
-    "eh_completo",
 ]

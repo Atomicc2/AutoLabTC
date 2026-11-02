@@ -1,4 +1,4 @@
-"""Operação de complemento de um autômato finito determinístico (AFD).
+﻿"""Operação de complemento de um autômato finito determinístico (AFD).
 
 O complemento de um AFD é obtido completando o autômato (adicionando um
 estado sumidouro/lixo e as transições ausentes, quando necessário) e, em
@@ -46,22 +46,6 @@ class Etapa:
         if chave in ("snapshot", "automato", "autômato", "snapshot_automato"):
             return self.snapshot
         raise KeyError(chave)
-
-
-def eh_afd(automato: AutomatoFinito) -> bool:
-    """Verifica se ``automato`` é um AFD.
-
-    Delega para o método ``eh_afd`` de ``AutomatoFinito``.
-    """
-    return automato.eh_afd()
-
-
-def eh_completo(automato: AutomatoFinito) -> bool:
-    """Verifica se ``automato`` é completo.
-
-    Delega para o método ``eh_completo`` de ``AutomatoFinito``.
-    """
-    return automato.eh_completo()
 
 
 def completar(automato: AutomatoFinito) -> AutomatoFinito:
@@ -167,7 +151,7 @@ def complemento(automato: AutomatoFinito) -> AutomatoFinito:
     Execeções:
         OperacaoInvalidaError: se ``automato`` não for um AFD.
     """
-    if not eh_afd(automato):
+    if not automato.eh_afd():
         raise OperacaoInvalidaError(
             "A operação complemento exige um AFD. "
             "O autômato informado é não determinístico; converta-o para AFD antes."
@@ -180,7 +164,7 @@ def complemento(automato: AutomatoFinito) -> AutomatoFinito:
         Etapa(descricao="Autômato original (AFD)", snapshot=automato.copiar())
     )
 
-    if not eh_completo(resultado):
+    if not resultado.eh_completo():
         completar(resultado)
         etapas.append(
             Etapa(
