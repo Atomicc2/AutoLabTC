@@ -1,0 +1,26 @@
+article.formulario-operacao {
+  display: flex;
+  gap: var(--espacamento-120);
+}
+
+/* Padroniza os labels (h2) dos botões de painel-importacao e painel-selecao*/
+.formulario-operacao h2 {
+  font-family: var(--fonte-primaria);
+  font-weight: var(--peso-negrito);
+  font-size: var(--tamanho-28);
+  color: var(--texto-primario);
+  text-align: center;
+
+  margin-bottom: var(--espacamento-16);
+}
+
+/* Padroniza as mensagens de erro em painel-importacao e formulario-operacao*/
+.formulario-operacao p {
+  width: 0;
+  min-width: 100%;
+  font-family: var(--fonte-secundaria);
+  font-weight: var(--peso-regular);
+  font-size: var(--tamanho-14);
+  color: var(--estado-perigo);
+  text-align: center;
+}
