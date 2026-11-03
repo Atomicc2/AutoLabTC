@@ -1,4 +1,4 @@
-"""Utilitário para transformar arquivos .jff (XML do JFLAP) em um AutomatoFinito."""
+"""Utilitário que transforma arquivos .jff (XML do JFLAP) em um AutomatoFinito e vice-versa."""
 
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -10,7 +10,7 @@ from api.nucleo.excecoes import ErroAutomatoNaoEncontrado, ErroJFFInvalido
 
 
 class UtilitarioJFF:
-    """Lê um arquivo .jff e o transforma em um objeto AutomatoFinito."""
+    """Lê/grava arquivos .jff transformando-os de/para um objeto AutomatoFinito."""
 
     @staticmethod
     def converter(caminho: str | Path) -> AutomatoFinito:
@@ -43,6 +43,64 @@ class UtilitarioJFF:
         )
         automato.validar()
         return automato
+
+    @staticmethod
+    def exportar(automato: AutomatoFinito, caminho: str | Path) -> Path:
+        """Serializa o AutomatoFinito e grava o .jff resultante em `caminho`.
+
+        Raises:
+            ValueError: se o autômato for inconsistente (via `validar`).
+        """
+        caminho = Path(caminho)
+        caminho.write_text(UtilitarioJFF.serializar(automato), encoding="utf-8")
+        return caminho
+
+    @staticmethod
+    def serializar(automato: AutomatoFinito) -> str:
+        """Transforma um AutomatoFinito no texto XML de um arquivo .jff.
+
+        Os estados recebem ids sequenciais em ordem determinística de nome e
+        coordenadas em grade, para que o arquivo abra organizado no JFLAP.
+        Os marcadores `<initial/>` e `<final/>` são escritos a partir dos
+        atributos `estado_inicial` e `estados_finais` do autômato.
+        """
+        automato.validar()
+        ordem = sorted(
+            automato.estados,
+            key=lambda estado: (estado.nome, estado.inicial, estado.final),
+        )
+        ids = {estado: indice for indice, estado in enumerate(ordem)}
+
+        raiz = ET.Element("structure")
+        ET.SubElement(raiz, "type").text = "fa"
+        xml_automato = ET.SubElement(raiz, "automaton")
+        for indice, estado in enumerate(ordem):
+            elemento = ET.SubElement(
+                xml_automato, "state", id=str(indice), name=estado.nome
+            )
+            ET.SubElement(elemento, "x").text = f"{100.0 + (indice % 6) * 150:.1f}"
+            ET.SubElement(elemento, "y").text = f"{100.0 + (indice // 6) * 150:.1f}"
+            if estado == automato.estado_inicial:
+                ET.SubElement(elemento, "initial")
+            if estado in automato.estados_finais:
+                ET.SubElement(elemento, "final")
+        for transicao in sorted(
+            automato.transicoes,
+            key=lambda t: (ids[t.origem], ids[t.destino], t.simbodo or ""),
+        ):
+            elemento = ET.SubElement(xml_automato, "transition")
+            ET.SubElement(elemento, "from").text = str(ids[transicao.origem])
+            ET.SubElement(elemento, "to").text = str(ids[transicao.destino])
+            if transicao.simbodo is None:
+                ET.SubElement(elemento, "read")  # <read/> vazio representa épsilon.
+            else:
+                ET.SubElement(elemento, "read").text = transicao.simbodo
+
+        ET.indent(raiz)
+        texto = ET.tostring(raiz, encoding="unicode")
+        return (
+            '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' + texto + "\n"
+        )
 
     @staticmethod
     def _carregar_raiz(caminho: str | Path) -> ET.Element:
