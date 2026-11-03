@@ -2,17 +2,14 @@ from api.nucleo.automato_finito import AutomatoFinito
 from api.nucleo.estado import Estado
 from api.nucleo.transicao import Transicao
 
+def completar(automato: AutomatoFinito) -> None:
+    """
+    Completa o autômato adicionando um estado sumidouro (poço)
+    e as transições ausentes, quando necessário.
 
-class UtilitariosOperacoes:
-
-  # Método completar()
-  # Completa autômato adicionando um estado sumidouro (poço) e as
-  # transições ausentes, quando necessário.
-
-  # Se o autômato já for completo, nenhum estado é adicionado. Retorna o
-  # próprio autômato (mutado).
-  @staticmethod
-  def completar(automato: AutomatoFinito) -> AutomatoFinito:
+    Se o autômato já for completo, nenhuma alteração é realizada.
+    Modifica o próprio autômato (in-place).
+    """
 
     simbolos = sorted(automato.alfabeto)
 
@@ -28,7 +25,7 @@ class UtilitariosOperacoes:
                 faltantes.append((estado, simbodo))
 
     if not faltantes:
-        return automato
+        return
 
     # Garante nome único para o estado sumidouro.
     nome_poco = "poço"
@@ -52,39 +49,40 @@ class UtilitariosOperacoes:
             Transicao(origem=poco, simbodo=simbodo, destino=poco)
         )
 
+def inverter_finais(automato: AutomatoFinito) -> None:
+    """
+    Inverte os estados finais e não finais do autômato.
 
-  # Método _inverter_finais()
-  # Inverte estados finais e não finais de autômato (in place).
-  @staticmethod
-  def inverter_finais(automato: AutomatoFinito) -> AutomatoFinito:
-      
-      mapeamento: dict[Estado, Estado] = {}
-      
-      novos_estados: set[Estado] = set()
-      
-      for estado in automato.estados:
-          novo = Estado(
-              nome=estado.nome,
-              inicial=estado.inicial,
-              final=not estado.final,
-          )
-          mapeamento[estado] = novo
-          novos_estados.add(novo)
+    Modifica o próprio autômato (in-place).
+    """
+    
+    mapeamento: dict[Estado, Estado] = {}
+    
+    novos_estados: set[Estado] = set()
+    
+    for estado in automato.estados:
+        novo = Estado(
+            nome=estado.nome,
+            inicial=estado.inicial,
+            final=not estado.final,
+        )
+        mapeamento[estado] = novo
+        novos_estados.add(novo)
 
-      automato.estados = novos_estados
-      
-      if automato.estado_inicial is not None:
-          automato.estado_inicial = mapeamento[automato.estado_inicial]
+    automato.estados = novos_estados
+    
+    if automato.estado_inicial is not None:
+        automato.estado_inicial = mapeamento[automato.estado_inicial]
 
-      automato.transicoes = [
-          Transicao(
-              origem=mapeamento[t.origem],
-              simbodo=t.simbodo,
-              destino=mapeamento[t.destino],
-          )
-          for t in automato.transicoes
-      ]
-      
-      automato.estados_finais = {
-          mapeamento[e] for e in automato.estados_finais if e in mapeamento
-      }
+    automato.transicoes = [
+        Transicao(
+            origem=mapeamento[t.origem],
+            simbodo=t.simbodo,
+            destino=mapeamento[t.destino],
+        )
+        for t in automato.transicoes
+    ]
+    
+    automato.estados_finais = {
+        mapeamento[e] for e in automato.estados_finais if e in mapeamento
+    }
