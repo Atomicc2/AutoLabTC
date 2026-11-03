@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from api.nucleo.AutomatoFinito import AutomatoFinito
+from api.nucleo.automato_finito import AutomatoFinito
 
 
 # Representa uma etapa intermediária de uma operação sobre autômato.

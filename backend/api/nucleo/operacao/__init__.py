@@ -1,6 +1,6 @@
 """Pacote de operações sobre autômatos finitos."""
 
-from api.nucleo.operacao.Complemento import (
+from api.nucleo.operacao.complemento import (
     Complemento,
     Etapa,
     complemento,

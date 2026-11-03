@@ -2,7 +2,7 @@ import copy
 from dataclasses import dataclass, field
 
 from api.nucleo.Estado import Estado
-from api.nucleo.Transicao import Transicao
+from api.nucleo.transicao import Transicao
 
 
 @dataclass

@@ -1,8 +1,8 @@
-from api.nucleo.AutomatoFinito import AutomatoFinito
-from api.nucleo.Estado import Estado
+from api.nucleo.automato_finito import AutomatoFinito
+from api.nucleo.estado import Estado
 from api.nucleo.excecoes import OperacaoInvalidaError
-from api.nucleo.operacao.Complemento import complemento
-from api.nucleo.Transicao import Transicao
+from api.nucleo.operacao.complemento import complemento
+from api.nucleo.transicao import Transicao
 
 
 def test_complemento_de_afd_completo_inverte_finais():

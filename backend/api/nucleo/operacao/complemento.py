@@ -13,11 +13,11 @@
 # contém uma descrição textual e um snapshot do autômato naquele momento. Essa
 # lista pode ser consumida posteriormente pelo ``UtilitarioPdf``.
 
-from api.nucleo.AutomatoFinito import AutomatoFinito
-from api.nucleo.Estado import Estado
+from api.nucleo.automato_finito import AutomatoFinito
+from api.nucleo.estado import Estado
 from api.nucleo.excecoes import OperacaoInvalidaError
-from api.nucleo.Transicao import Transicao
-from api.nucleo.dto.Etapa import Etapa
+from api.nucleo.transicao import Transicao
+from api.nucleo.dto.etapa import Etapa
 
 # Método completar()
 # Completa autômato adicionando um estado sumidouro (poço) e as
