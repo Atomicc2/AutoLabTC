@@ -18,9 +18,10 @@ def test_complemento_de_afd_completo_inverte_finais():
     automato.adicionar_transicao(Transicao(q1, "a", q0))
 
     resultado = complemento(automato)
+    automato_final = resultado.automato_final
 
-    assert len(resultado.estados) == 2
-    finais = {e.nome for e in resultado.estados if e.final}
+    assert len(automato_final.estados) == 2
+    finais = {e.nome for e in automato_final.estados if e.final}
     assert finais == {"q0"}
 
     finais_original = {e.nome for e in automato.estados if e.final}
@@ -39,23 +40,24 @@ def test_complemento_de_afd_incompleto_adiciona_poco_e_completa():
     automato.adicionar_transicao(Transicao(q0, "a", q1))
 
     resultado = complemento(automato)
+    automato_final = resultado.automato_final
 
-    assert len(resultado.estados) == 3
-    assert resultado.eh_completo()
+    assert len(automato_final.estados) == 3
+    assert automato_final.eh_completo()
 
-    poco = next(e for e in resultado.estados if e.nome == "poço")
+    poco = next(e for e in automato_final.estados if e.nome == "poço")
     assert poco.final is True
 
     auto_loops = [
         t
-        for t in resultado.transicoes
+        for t in automato_final.transicoes
         if t.origem == poco and t.destino == poco and t.simbodo == "a"
     ]
     assert len(auto_loops) == 1
 
     transicao_para_poco = [
         t
-        for t in resultado.transicoes
+        for t in automato_final.transicoes
         if t.origem.nome == "q1" and t.destino == poco and t.simbodo == "a"
     ]
     assert len(transicao_para_poco) == 1
@@ -119,6 +121,6 @@ def test_complemento_registra_etapas():
     for etapa in etapas:
         assert hasattr(etapa, "descricao")
         assert etapa.descricao
-        snap = etapa.snapshot if hasattr(etapa, "snapshot") else etapa.automato
+        snap = etapa.automato
         assert snap is not None
         assert isinstance(snap, AutomatoFinito)

@@ -14,11 +14,10 @@
 # lista pode ser consumida posteriormente pelo ``UtilitarioPdf``.
 
 from api.nucleo.automato_finito import AutomatoFinito
-from api.nucleo.estado import Estado
+from api.nucleo.dto.resultado_operacao import ResultadoOperacao
 from api.nucleo.excecoes import OperacaoInvalidaError
-from api.nucleo.transicao import Transicao
 from api.nucleo.dto.etapa import Etapa
-from api.nucleo.utilitarios.utilitarios_operacoes import UtilitariosOperacoes
+from api.nucleo.utilitario.utilitarios_operacoes import UtilitariosOperacoes
 
 # Calcula o complemento de um AFD.
 
@@ -44,15 +43,15 @@ from api.nucleo.utilitarios.utilitarios_operacoes import UtilitariosOperacoes
 # Execeções:
 #     OperacaoInvalidaError: se autômato não for um AFD.
 
-
 def complemento(automato: AutomatoFinito) -> AutomatoFinito:
+    automato = automato.copiar()
+
     if not automato.eh_afd():
         raise OperacaoInvalidaError(
             "A operação complemento exige um AFD. "
             "O autômato informado é não determinístico; converta-o para AFD antes."
         )
 
-    resultado = automato.copiar()
     etapas: list[Etapa] = []
 
     etapas.append(
@@ -62,38 +61,25 @@ def complemento(automato: AutomatoFinito) -> AutomatoFinito:
         )
     )
 
-    if not resultado.eh_completo():
-        UtilitariosOperacoes.completar(resultado)
+    if not automato.eh_completo():
+        UtilitariosOperacoes.completar(automato)
         etapas.append(
             Etapa(
-                descricao="Completar autômato (estado sumidouro)",
-                automato=resultado.copiar(),
+                descricao = "Completar autômato (estado sumidouro)",
+                automato = automato.copiar(),
             )
         )
 
-    UtilitariosOperacoes.inverter_finais(resultado)
-    etapas.append(Etapa(descricao="Autômato complemento", automato=resultado.copiar()))
-
-    resultado.etapas = etapas
-    resultado.passos = etapas
-    return resultado
-
-
-def complemento_com_etapas(
-    automato: AutomatoFinito,
-) -> tuple[AutomatoFinito, list[Etapa]]:
-    """Executa o complemento e retorna ``(autômato, etapas)``."""
-    resultado = complemento(automato)
-    etapas = getattr(resultado, "etapas", [])
-    return resultado, etapas
+    UtilitariosOperacoes.inverter_finais(automato)
+    etapas.append(
+        Etapa(
+            descricao = "Autômato complemento", 
+            automato = automato.copiar()
+        )
+    )
 
 
-class Complemento:
-
-    @staticmethod
-    def complemento(automato: AutomatoFinito) -> AutomatoFinito:
-        return complemento(automato)
-
-    @staticmethod
-    def executar(automato: AutomatoFinito) -> tuple[AutomatoFinito, list[Etapa]]:
-        return complemento_com_etapas(automato)
+    return ResultadoOperacao(
+        automato_final = automato.copiar(),
+        etapas = etapas
+    )
