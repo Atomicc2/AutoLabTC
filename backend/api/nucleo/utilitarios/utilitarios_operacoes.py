@@ -1,3 +1,8 @@
+from api.nucleo.automato_finito import AutomatoFinito
+from api.nucleo.estado import Estado
+from api.nucleo.transicao import Transicao
+
+
 class UtilitariosOperacoes:
 
   # Método completar()
