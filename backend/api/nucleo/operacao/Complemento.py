@@ -1,60 +1,32 @@
-﻿"""Operação de complemento de um autômato finito determinístico (AFD).
+﻿# Operação de complemento de um autômato finito determinístico (AFD).
 
-O complemento de um AFD é obtido completando o autômato (adicionando um
-estado sumidouro/lixo e as transições ausentes, quando necessário) e, em
-seguida, invertendo os estados finais e não finais.
+# O complemento de um AFD é obtido completando o autômato (adicionando um
+# estado sumidouro/lixo e as transições ausentes, quando necessário) e, em
+# seguida, invertendo os estados finais e não finais.
 
-A operação exige que o autômato de entrada seja um AFD. Caso seja recebido
-um AFN (transições épsilon ou não determinismo), é lançada a exceção
-:class:`OperacaoInvalidaError`, indicando a necessidade de conversão prévia
-para AFD.
+# A operação exige que o autômato de entrada seja um AFD. Caso seja recebido
+# um AFN (transições épsilon ou não determinismo), é lançada a exceção
+# :class:`OperacaoInvalidaError`, indicando a necessidade de conversão prévia
+# para AFD.
 
-Cada etapa intermediária é registrada em uma lista de :class:`Etapa`, que
-contém uma descrição textual e um snapshot do autômato naquele momento. Essa
-lista pode ser consumida posteriormente pelo ``UtilitarioPdf``.
-"""
-
-from dataclasses import dataclass
+# Cada etapa intermediária é registrada em uma lista de :class:`Etapa`, que
+# contém uma descrição textual e um snapshot do autômato naquele momento. Essa
+# lista pode ser consumida posteriormente pelo ``UtilitarioPdf``.
 
 from api.nucleo.AutomatoFinito import AutomatoFinito
 from api.nucleo.Estado import Estado
 from api.nucleo.excecoes import OperacaoInvalidaError
 from api.nucleo.Transicao import Transicao
+from api.nucleo.dto.Etapa import Etapa
 
+# Método completar()
+# Completa autômato adicionando um estado sumidouro (poço) e as
+# transições ausentes, quando necessário.
 
-@dataclass
-class Etapa:
-    """Representa uma etapa intermediária de uma operação sobre autômato.
-
-    Attributes:
-        descricao: Descrição textual da etapa.
-        snapshot: Cópia do autômato no estado correspondente à etapa.
-    """
-
-    descricao: str
-    snapshot: AutomatoFinito
-
-    @property
-    def automato(self) -> AutomatoFinito:
-        """Alias de ``snapshot`` (compatibilidade com diferentes convenções)."""
-        return self.snapshot
-
-    def __getitem__(self, chave: str):
-        """Permite acesso estilo dicionário: ``etapa['descricao']``."""
-        if chave in ("descricao", "description"):
-            return self.descricao
-        if chave in ("snapshot", "automato", "autômato", "snapshot_automato"):
-            return self.snapshot
-        raise KeyError(chave)
-
-
+# Se o autômato já for completo, nenhum estado é adicionado. Retorna o
+# próprio autômato (mutado).
 def completar(automato: AutomatoFinito) -> AutomatoFinito:
-    """Completa ``automato`` adicionando um estado sumidouro (poço) e as
-    transições ausentes, quando necessário.
 
-    Se o autômato já for completo, nenhum estado é adicionado. Retorna o
-    próprio autômato (mutado).
-    """
     simbodos = sorted(automato.alfabeto)
 
     existentes: set[tuple[Estado, str | None]] = set()
@@ -96,8 +68,9 @@ def completar(automato: AutomatoFinito) -> AutomatoFinito:
     return automato
 
 
+# Método _inverter_finais()
+# Inverte estados finais e não finais de autômato (in place).
 def _inverter_finais(automato: AutomatoFinito) -> AutomatoFinito:
-    """Inverte estados finais e não finais de ``automato`` (in place)."""
     mapeamento: dict[Estado, Estado] = {}
     novos_estados: set[Estado] = set()
     for estado in automato.estados:
@@ -125,32 +98,32 @@ def _inverter_finais(automato: AutomatoFinito) -> AutomatoFinito:
     }
     return automato
 
+# Calcula o complemento de um AFD.
+
+# Pré-condição: autômato deve ser um AFD. Se for um AFN (transições
+# épsilon ou não determinismo), lança :class:`OperacaoInvalidaError`.
+
+# Passos:
+#     1. Valida a pré-condição (AFD).
+#     2. Copia o autômato.
+#     3. Registra a etapa "Autômato original (AFD)".
+#     4. Completa o autômato (estado sumidouro) se necessário e registra.
+#     5. Inverte estados finais/não finais e registra a etapa final.
+
+# A lista de etapas intermediárias é anexada ao autômato retornado no
+# atributo ``etapas`` (alias ``passos``).
+
+# Args:
+#     automato: AFD de entrada.
+
+# Returns:
+#     Novo autômato representando o complemento.
+
+# Execeções:
+#     OperacaoInvalidaError: se autômato não for um AFD.
+
 
 def complemento(automato: AutomatoFinito) -> AutomatoFinito:
-    """Calcula o complemento de um AFD.
-
-    Pré-condição: ``automato`` deve ser um AFD. Se for um AFN (transições
-    épsilon ou não determinismo), lança :class:`OperacaoInvalidaError`.
-
-    Passos:
-        1. Valida a pré-condição (AFD).
-        2. Copia o autômato.
-        3. Registra a etapa "Autômato original (AFD)".
-        4. Completa o autômato (estado sumidouro) se necessário e registra.
-        5. Inverte estados finais/não finais e registra a etapa final.
-
-    A lista de etapas intermediárias é anexada ao autômato retornado no
-    atributo ``etapas`` (alias ``passos``).
-
-    Args:
-        automato: AFD de entrada.
-
-    Returns:
-        Novo autômato representando o complemento.
-
-    Execeções:
-        OperacaoInvalidaError: se ``automato`` não for um AFD.
-    """
     if not automato.eh_afd():
         raise OperacaoInvalidaError(
             "A operação complemento exige um AFD. "
@@ -161,7 +134,10 @@ def complemento(automato: AutomatoFinito) -> AutomatoFinito:
     etapas: list[Etapa] = []
 
     etapas.append(
-        Etapa(descricao="Autômato original (AFD)", snapshot=automato.copiar())
+        Etapa(
+            descricao = "Autômato original (AFD)", 
+            automato = automato.copiar()
+        )
     )
 
     if not resultado.eh_completo():
@@ -169,12 +145,12 @@ def complemento(automato: AutomatoFinito) -> AutomatoFinito:
         etapas.append(
             Etapa(
                 descricao="Completar autômato (estado sumidouro)",
-                snapshot=resultado.copiar(),
+                automato=resultado.copiar(),
             )
         )
 
     _inverter_finais(resultado)
-    etapas.append(Etapa(descricao="Autômato complemento", snapshot=resultado.copiar()))
+    etapas.append(Etapa(descricao="Autômato complemento", automato=resultado.copiar()))
 
     resultado.etapas = etapas
     resultado.passos = etapas
