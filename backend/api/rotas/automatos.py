@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from api.servicos.operacoes_service import AutomatoService
+from api.servicos.operacoes_servico import AutomatoService
 
 router = APIRouter()
 

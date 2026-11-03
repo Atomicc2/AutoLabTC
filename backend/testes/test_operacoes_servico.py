@@ -1,6 +1,7 @@
-from api.servicos.operacoes_service import complemento
+from api.nucleo.utilitario.utilitarios_jff import converter_jff_para_automato
+from api.servicos.operacoes_servico import complemento
 
-def test_complemento(tmp_path):
+def test_complemento():
     jff = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
     <structure>
         <type>fa</type>
@@ -24,16 +25,11 @@ def test_complemento(tmp_path):
     </structure>
     """
 
-    arquivo_entrada = tmp_path / "automato.jff"
-    arquivo_saida = tmp_path / "complemento.jff"
-
-    arquivo_entrada.write_text(jff, encoding="utf-8")
-
-    resultado = complemento(str(arquivo_entrada), str(arquivo_saida))
+    resultado = complemento(jff)
 
     assert isinstance(resultado, str)
-    assert arquivo_saida.exists()
-    assert arquivo_saida.read_text(encoding="utf-8").strip()
+    assert resultado.strip()
 
-    print("\nJFF resultante:")
-    print(resultado)
+    automato = converter_jff_para_automato(resultado)
+
+    assert automato.eh_afd()

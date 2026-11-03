@@ -1,8 +1,15 @@
+
 import api.nucleo.automato_finito
 import api.nucleo.estado
 import api.nucleo.transicao
 import api.nucleo.excecoes
-from api.nucleo.utilitario.utilitarios_jff import converter_automato_para_jff, converter_jff_para_automato, serializar
+
+from api.nucleo.utilitario.utilitarios_jff import (
+    converter_automato_para_jff,
+    converter_jff_para_automato,
+    serializar,
+    salvar_jff,
+)
 
 
 JFF_SIMPLES = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -58,15 +65,8 @@ JFF_EPSILON = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 """
 
 
-def escrever_jff(tmp_path, conteudo, nome="automato.jff"):
-    caminho = tmp_path / nome
-    caminho.write_text(conteudo, encoding="utf-8")
-    return caminho
-
-
-def test_converter_automato_simples(tmp_path):
-    caminho = escrever_jff(tmp_path, JFF_SIMPLES)
-    automato = converter_jff_para_automato(caminho)
+def test_converter_automato_simples():
+    automato = converter_jff_para_automato(JFF_SIMPLES)
 
     automato.validar()  # não deve lançar
     assert sorted(e.nome for e in automato.estados) == ["q0", "q1"]
@@ -76,131 +76,108 @@ def test_converter_automato_simples(tmp_path):
     assert [e.nome for e in automato.estados_finais] == ["q1"]
 
 
-def test_converter_transicao_epsilon(tmp_path):
-    caminho = escrever_jff(tmp_path, JFF_EPSILON)
-    automato = converter_jff_para_automato(caminho)
+def test_converter_transicao_epsilon():
+    automato = converter_jff_para_automato(JFF_EPSILON)
 
     assert automato.transicoes[0].simbodo is None
     assert automato.alfabeto == set()
 
 
-def test_converter_estado_sem_name_usa_id(tmp_path):
+def test_converter_estado_sem_name_usa_id():
     jff = JFF_SIMPLES.replace(
         '<state id="0" name="q0">',
         '<state id="0">'
     )
-    caminho = escrever_jff(tmp_path, jff)
-    automato = converter_jff_para_automato(caminho)
+
+    automato = converter_jff_para_automato(jff)
 
     assert any(e.nome == "0" for e in automato.estados)
 
 
-def test_arquivo_inexistente(tmp_path):
+def test_xml_invalido():
     try:
-        converter_jff_para_automato(
-            tmp_path / "abc.jff"
-        )
-        assert False, "deveria lançar ErroAutomatoNaoEncontrado"
-    except api.nucleo.excecoes.ErroAutomatoNaoEncontrado:
-        pass
-
-
-def test_xml_invalido(tmp_path):
-    caminho = escrever_jff(tmp_path, "<structure><automaton>")
-
-    try:
-        converter_jff_para_automato(caminho)
+        converter_jff_para_automato("<structure><automaton>")
         assert False, "deveria lançar ErroJFFInvalido"
     except api.nucleo.excecoes.ErroJFFInvalido:
         pass
 
 
-def test_raiz_inesperada(tmp_path):
-    caminho = escrever_jff(tmp_path, "<notas>oi</notas>")
-
+def test_raiz_inesperada():
     try:
-        converter_jff_para_automato(caminho)
+        converter_jff_para_automato("<notas>oi</notas>")
         assert False, "deveria lançar ErroJFFInvalido"
     except api.nucleo.excecoes.ErroJFFInvalido:
         pass
 
 
-def test_tipo_nao_fa(tmp_path):
+def test_tipo_nao_fa():
     jff = JFF_SIMPLES.replace(
         "<type>fa</type>",
         "<type>turing</type>"
     )
-    caminho = escrever_jff(tmp_path, jff)
 
     try:
-        converter_jff_para_automato(caminho)
+        converter_jff_para_automato(jff)
         assert False, "deveria lançar ErroJFFInvalido"
     except api.nucleo.excecoes.ErroJFFInvalido:
         pass
 
 
-def test_sem_secao_automaton(tmp_path):
-    caminho = escrever_jff(
-        tmp_path,
-        "<structure><type>fa</type></structure>"
-    )
+def test_sem_secao_automaton():
+    jff = "<structure><type>fa</type></structure>"
 
     try:
-        converter_jff_para_automato(caminho)
+        converter_jff_para_automato(jff)
         assert False, "deveria lançar ErroJFFInvalido"
     except api.nucleo.excecoes.ErroJFFInvalido:
         pass
 
 
-def test_transicao_estado_inexistente(tmp_path):
+def test_transicao_estado_inexistente():
     jff = JFF_SIMPLES.replace(
         "<from>0</from>",
         "<from>9</from>",
         1
     )
-    caminho = escrever_jff(tmp_path, jff)
 
     try:
-        converter_jff_para_automato(caminho)
+        converter_jff_para_automato(jff)
         assert False, "deveria lançar ErroJFFInvalido"
     except api.nucleo.excecoes.ErroJFFInvalido:
         pass
 
 
-def test_sem_estado_inicial(tmp_path):
+def test_sem_estado_inicial():
     jff = JFF_SIMPLES.replace("<initial/>", "")
-    caminho = escrever_jff(tmp_path, jff)
 
     try:
-        converter_jff_para_automato(caminho)
+        converter_jff_para_automato(jff)
         assert False, "deveria lançar ErroJFFInvalido"
     except api.nucleo.excecoes.ErroJFFInvalido:
         pass
 
 
-def test_dois_estados_iniciais(tmp_path):
+def test_dois_estados_iniciais():
     jff = JFF_SIMPLES.replace(
         "<final/>",
         "<final/><initial/>"
     )
-    caminho = escrever_jff(tmp_path, jff)
 
     try:
-        converter_jff_para_automato(caminho)
+        converter_jff_para_automato(jff)
         assert False, "deveria lançar ErroJFFInvalido"
     except api.nucleo.excecoes.ErroJFFInvalido:
         pass
 
 
-def test_estado_sem_id(tmp_path):
+def test_estado_sem_id():
     jff = JFF_SIMPLES.replace(
         '<state id="0" name="q0">',
         '<state name="q0">'
     )
-    caminho = escrever_jff(tmp_path, jff)
 
     try:
-        converter_jff_para_automato(caminho)
+        converter_jff_para_automato(jff)
         assert False, "deveria lançar ErroJFFInvalido"
     except api.nucleo.excecoes.ErroJFFInvalido:
         pass
@@ -230,29 +207,22 @@ def construir_automato_teste():
     return automato
 
 
-def test_exportar_grava_arquivo(tmp_path):
+def test_exportar_retorna_jff():
     automato = construir_automato_teste()
 
-    caminho = converter_automato_para_jff(
-        automato,
-        tmp_path / "saida.jff"
-    )
+    texto = converter_automato_para_jff(automato)
 
-    texto = caminho.read_text(encoding="utf-8")
-
+    assert isinstance(texto, str)
     assert texto.startswith('<?xml version="1.0"')
     assert "<type>fa</type>" in texto
     assert 'name="q0"' in texto
 
 
-def test_exportar_roundtrip(tmp_path):
+def test_exportar_roundtrip():
     automato = construir_automato_teste()
 
     reconstruido = converter_jff_para_automato(
-        converter_automato_para_jff(
-            automato,
-            tmp_path / "roundtrip.jff"
-        )
+        converter_automato_para_jff(automato)
     )
 
     reconstruido.validar()  # não deve lançar
@@ -270,7 +240,7 @@ def test_exportar_roundtrip(tmp_path):
     )
 
 
-def test_exportar_transicao_epsilon(tmp_path):
+def test_exportar_transicao_epsilon():
     q0 = api.nucleo.estado.Estado("q0", inicial=True)
     q1 = api.nucleo.estado.Estado("q1", final=True)
 
@@ -286,10 +256,7 @@ def test_exportar_transicao_epsilon(tmp_path):
     )  # épsilon
 
     reconstruido = converter_jff_para_automato(
-        converter_automato_para_jff(
-            automato,
-            tmp_path / "epsilon.jff"
-        )
+        converter_automato_para_jff(automato)
     )
 
     assert reconstruido.transicoes == [
@@ -298,7 +265,7 @@ def test_exportar_transicao_epsilon(tmp_path):
     assert reconstruido.alfabeto == set()
 
 
-def test_exportar_usa_atributos_do_automato(tmp_path):
+def test_exportar_usa_atributos_do_automato():
     q0 = api.nucleo.estado.Estado("q0")  # flags inicial/final ausentes
     q1 = api.nucleo.estado.Estado("q1")
 
@@ -314,10 +281,7 @@ def test_exportar_usa_atributos_do_automato(tmp_path):
     )
 
     reconstruido = converter_jff_para_automato(
-        converter_automato_para_jff(
-            automato,
-            tmp_path / "flags.jff"
-        )
+        converter_automato_para_jff(automato)
     )
 
     assert reconstruido.estado_inicial.nome == "q0"
@@ -334,7 +298,7 @@ def test_serializar_ordem_deterministica():
     assert texto.find('name="q0"') < texto.find('name="q1"')
 
 
-def test_exportar_automato_invalido(tmp_path):
+def test_exportar_automato_invalido():
     automato = api.nucleo.automato_finito.AutomatoFinito(
         estados=set(),
         alfabeto=set(),
@@ -342,10 +306,17 @@ def test_exportar_automato_invalido(tmp_path):
     )
 
     try:
-        converter_automato_para_jff(
-            automato,
-            tmp_path / "invalido.jff"
-        )
+        converter_automato_para_jff(automato)
         assert False, "deveria lançar ValueError"
     except ValueError:
         pass
+
+
+def test_salvar_jff(tmp_path):
+    automato = construir_automato_teste()
+    texto = converter_automato_para_jff(automato)
+
+    caminho = salvar_jff(texto, tmp_path / "saida.jff")
+
+    assert caminho.exists()
+    assert caminho.read_text(encoding="utf-8") == texto
