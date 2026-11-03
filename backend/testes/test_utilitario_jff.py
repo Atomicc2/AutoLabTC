@@ -2,7 +2,7 @@ import api.nucleo.AutomatoFinito
 import api.nucleo.Estado
 import api.nucleo.Transicao
 import api.nucleo.excecoes
-import api.nucleo.utilitarioJFF
+import api.nucleo.utilitarios_jff
 
 JFF_SIMPLES = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <structure>
