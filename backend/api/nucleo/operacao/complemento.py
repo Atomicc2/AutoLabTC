@@ -78,7 +78,6 @@ def complemento(automato: AutomatoFinito) -> AutomatoFinito:
         )
     )
 
-
     return ResultadoOperacao(
         automato_final = automato.copiar(),
         etapas = etapas

@@ -14,7 +14,7 @@ class UtilitariosOperacoes:
   @staticmethod
   def completar(automato: AutomatoFinito) -> AutomatoFinito:
 
-    simbodos = sorted(automato.alfabeto)
+    simbolos = sorted(automato.alfabeto)
 
     existentes: set[tuple[Estado, str | None]] = set()
     for transicao in automato.transicoes:
@@ -23,7 +23,7 @@ class UtilitariosOperacoes:
 
     faltantes: list[tuple[Estado, str]] = []
     for estado in automato.estados:
-        for simbodo in simbodos:
+        for simbodo in simbolos:
             if (estado, simbodo) not in existentes:
                 faltantes.append((estado, simbodo))
 
@@ -47,7 +47,7 @@ class UtilitariosOperacoes:
             Transicao(origem=estado_origem, simbodo=simbodo, destino=poco)
         )
 
-    for simbodo in simbodos:
+    for simbodo in simbolos:
         automato.adicionar_transicao(
             Transicao(origem=poco, simbodo=simbodo, destino=poco)
         )
