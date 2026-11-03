@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from api.nucleo.Estado import Estado
+from api.nucleo.estado import Estado
 
 
 @dataclass(frozen=True)

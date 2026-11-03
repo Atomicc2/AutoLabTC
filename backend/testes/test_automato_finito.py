@@ -1,6 +1,6 @@
-from api.nucleo.AutomatoFinito import AutomatoFinito
-from api.nucleo.Estado import Estado
-from api.nucleo.Transicao import Transicao
+from api.nucleo.automato_finito import AutomatoFinito
+from api.nucleo.estado import Estado
+from api.nucleo.transicao import Transicao
 
 
 def test_estado_basico():
