@@ -3,9 +3,9 @@
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from api.nucleo.AutomatoFinito import AutomatoFinito
-from api.nucleo.Estado import Estado
-from api.nucleo.Transicao import Transicao
+from api.nucleo.automato_finito import AutomatoFinito
+from api.nucleo.estado import Estado
+from api.nucleo.transicao import Transicao
 from api.nucleo.excecoes import ErroAutomatoNaoEncontrado, ErroJFFInvalido
 
 
