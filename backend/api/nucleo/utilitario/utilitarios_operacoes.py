@@ -1,5 +1,6 @@
 from api.nucleo.automato_finito import AutomatoFinito
 from api.nucleo.estado import Estado
+from api.nucleo.excecoes import OperacaoInvalidaError
 from api.nucleo.transicao import Transicao
 
 def completar(automato: AutomatoFinito) -> None:
@@ -53,36 +54,18 @@ def inverter_finais(automato: AutomatoFinito) -> None:
     """
     Inverte os estados finais e não finais do autômato.
 
+    Exige um AFD.
     Modifica o próprio autômato (in-place).
     """
-    
-    mapeamento: dict[Estado, Estado] = {}
-    
-    novos_estados: set[Estado] = set()
-    
+    if not automato.eh_afd():
+        raise OperacaoInvalidaError(
+            "A operação complemento exige um AFD. "
+            "O autômato informado é não determinístico; converta-o para AFD antes."
+        )
+
     for estado in automato.estados:
-        novo = Estado(
-            nome=estado.nome,
-            inicial=estado.inicial,
-            final=not estado.final,
-        )
-        mapeamento[estado] = novo
-        novos_estados.add(novo)
+        estado.final = not estado.final
 
-    automato.estados = novos_estados
-    
-    if automato.estado_inicial is not None:
-        automato.estado_inicial = mapeamento[automato.estado_inicial]
-
-    automato.transicoes = [
-        Transicao(
-            origem=mapeamento[t.origem],
-            simbodo=t.simbodo,
-            destino=mapeamento[t.destino],
-        )
-        for t in automato.transicoes
-    ]
-    
     automato.estados_finais = {
-        mapeamento[e] for e in automato.estados_finais if e in mapeamento
+        estado for estado in automato.estados if estado.final
     }

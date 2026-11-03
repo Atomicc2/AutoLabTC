@@ -21,7 +21,7 @@ from api.nucleo.excecoes import OperacaoInvalidaError
 from api.nucleo.dto.etapa import Etapa
 from api.nucleo.utilitario.utilitarios_operacoes import completar, inverter_finais
 
-def complemento(automato: AutomatoFinito) -> AutomatoFinito:
+def complemento(automato: AutomatoFinito) -> ResultadoOperacao:
     """
     Calcula o complemento de um autômato finito determinístico (AFD).
 
