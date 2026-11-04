@@ -1,5 +1,5 @@
-import BotaoPrincipal from './botao-principal';
-import './formulario-operacao.css'
+import BotaoPrincipal from "./botao-principal";
+import "./formulario-operacao.css";
 import PainelImportacao from "./importacao/painel-importacao";
 import PainelSelecao from "./selecao/painel-selecao";
 import { useState } from "react";
@@ -43,7 +43,11 @@ function FormularioOperacao() {
 
   async function handleEnviar() {
     const { operacao, arquivo, enviando } = state;
-    if (!arquivo || enviando) return;
+    if (!arquivo) {
+      setState((s) => ({ ...s, erro: "Selecione um arquivo .jff antes de gerar." }));
+      return;
+    }
+    if (enviando) return;
 
     setState((s) => ({ ...s, enviando: true, erro: null }));
 
@@ -66,7 +70,11 @@ function FormularioOperacao() {
       const url = URL.createObjectURL(blob);
       setState((s) => ({ ...s, enviando: false, urlDownload: url }));
     } catch (erro) {
-      setState((s) => ({ ...s, enviando: false, erro: "Erro ao comunicar com o backend" }));
+      setState((s) => ({
+        ...s,
+        enviando: false,
+        erro: "Erro ao comunicar com o backend",
+      }));
     }
   }
 
@@ -86,23 +94,28 @@ function FormularioOperacao() {
 
   return (
     <article className="formulario-operacao">
-      <PainelSelecao
-        valor={state.operacao}
-        onSelecionar={handleSelecionarOperacao}
-      />
-      {state.operacao && (
-        <PainelImportacao
-          key={state.operacao}
-          quantidadeSlots={1}
-          onArquivoSelecionado={handleSelecionarArquivo}
+      <div className="paineis-container">
+        {state.operacao && (
+          <PainelImportacao
+            key={state.operacao}
+            quantidadeSlots={1}
+            onArquivoSelecionado={handleSelecionarArquivo}
+          />
+        )}
+
+        <PainelSelecao
+          valor={state.operacao}
+          onSelecionar={handleSelecionarOperacao}
         />
-      )}
-      <BotaoPrincipal
-        label={state.urlDownload ? "Baixar .zip" : "Gerar Autômato"}
-        disabled={state.enviando || !state.arquivo}
-        onClick={state.urlDownload ? handleDownload : handleEnviar}
-      />
-      {state.erro && <p role="status">{state.erro}</p>}
+      </div>
+      <div className="botao-container">
+        <BotaoPrincipal
+          label={state.urlDownload ? "Baixar .zip" : "Gerar Autômato"}
+          disabled={state.enviando || !state.arquivo}
+          onClick={state.urlDownload ? handleDownload : handleEnviar}
+        />
+        {state.erro && <p role="status">{state.erro}</p>}
+      </div>
     </article>
   );
 }

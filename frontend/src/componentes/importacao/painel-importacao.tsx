@@ -54,7 +54,7 @@ function PainelImportacao({ quantidadeSlots, onArquivoSelecionado }: PainelImpor
         indice === posicao ? { arquivo: erro ? null : arquivo, erro } : slot,
       ),
     );
-    onArquivoSelecionado?.(arquivo);
+    onArquivoSelecionado?.(erro ? null : arquivo);
   }
 
   return (

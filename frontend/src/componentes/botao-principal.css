@@ -19,6 +19,11 @@
   cursor: pointer;
 }
 
+.botao-principal button:disabled {
+  background-color: var(--caramelo-400);
+  cursor: not-allowed;
+}
+
 .botao-principal button span {
   font-family: var(--fonte-secundaria);
   font-size: var(--tamanho-18);
