@@ -6,6 +6,10 @@ class ErroJFFInvalido(Exception):
     """Exceção lançada quando um arquivo JFF é inválido."""
 
 
+class ErroGeracaoPdf(Exception):
+    """Exceção lançada quando o PDF não pode ser gerado."""
+
+
 class OperacaoInvalidaError(ValueError):
     """Exceção lançada quando uma operação não pode ser aplicada ao autômato.
 
