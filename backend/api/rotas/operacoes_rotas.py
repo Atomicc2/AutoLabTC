@@ -1,9 +1,8 @@
-from typing import Annotated, Literal
+from typing import Annotated
 
-from fastapi import APIRouter, File, HTTPException, Query, Response, UploadFile
+from fastapi import APIRouter, File, Response, UploadFile
 
-from api.nucleo.excecoes import ErroGeracaoPdf
-from api.servicos.operacoes_servico import complemento, complemento_pdf
+from api.servicos.operacoes_servico import complemento
 
 router = APIRouter(prefix="/operacoes", tags=["Operações"])
 
@@ -11,20 +10,13 @@ router = APIRouter(prefix="/operacoes", tags=["Operações"])
 @router.post("/complemento")
 async def realizar_complemento(
     arquivo: Annotated[UploadFile, File()],
-    formato: Annotated[Literal["jff", "pdf"], Query()] = "jff",
-):
+) -> Response:
+    """Gera um .zip com o .jff do complemento e o relatório PDF das etapas."""
     jff = (await arquivo.read()).decode("utf-8")
+    resposta = complemento(jff)
 
-    if formato == "pdf":
-        try:
-            pdf = complemento_pdf(jff)
-        except ErroGeracaoPdf as erro:
-            raise HTTPException(status_code=503, detail=str(erro)) from erro
-
-        return Response(
-            content=pdf,
-            media_type="application/pdf",
-            headers={"Content-Disposition": 'attachment; filename="complemento.pdf"'},
-        )
-
-    return Response(content=complemento(jff), media_type="application/xml")
+    return Response(
+        content=resposta.compactar("complemento"),
+        media_type="application/zip",
+        headers={"Content-Disposition": 'attachment; filename="complemento.zip"'},
+    )
