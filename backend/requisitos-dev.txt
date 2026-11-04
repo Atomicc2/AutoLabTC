@@ -1,6 +1,6 @@
 -r requisitos.txt
 pytest
 pytest-asyncio
-httpx
+httpx2
 black
 ruff
