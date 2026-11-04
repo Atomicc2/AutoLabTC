@@ -4,7 +4,7 @@ import shutil
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from pylatex import Command, Document, NoEscape, Section
+from pylatex import Center, Command, Document, NoEscape, Section
 
 from api.nucleo.dto.resultado_operacao import ResultadoOperacao
 from api.nucleo.excecoes import ErroGeracaoPdf
@@ -47,15 +47,19 @@ def _gerar_pdf(resultado: ResultadoOperacao, titulo: str) -> bytes:
     documento.preamble.append(Command("date", ""))
 
     documento.append(NoEscape(r"\maketitle"))
-    documento.append(Section("Resumo", label=False))
+    documento.append(Section("Resumo", numbering=False, label=False))
     documento.append(f"Operação: {titulo}.")
     documento.append(NoEscape(r"\par\noindent"))
     documento.append(f"Total de etapas: {len(resultado.etapas)}.")
     documento.append(NoEscape(r"\par\bigskip"))
 
     for indice, etapa in enumerate(resultado.etapas, start=1):
-        documento.append(Section(f"Etapa {indice} - {etapa.descricao}", label=False))
-        documento.append(NoEscape(automato_para_tikz(etapa.automato)))
+        documento.append(
+            Section(f"Etapa {indice} - {etapa.descricao}", numbering=False, label=False)
+        )
+        centro = Center()
+        centro.append(NoEscape(automato_para_tikz(etapa.automato)))
+        documento.append(centro)
         documento.append(NoEscape(r"\par\bigskip"))
 
     documento.append(NoEscape(r"Documento gerado automaticamente pelo AutoLab-TC."))

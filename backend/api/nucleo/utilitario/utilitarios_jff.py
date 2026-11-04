@@ -17,8 +17,8 @@ def converter_jff_para_automato(jff: str) -> AutomatoFinito:
     transições épsilon (simbodo=None).
 
     Raises:
-        ErroJFFInvalido: se o conteúdo não for um .jff válido.
-        ValueError: se o autômato resultante for inconsistente.
+        ErroJFFInvalido: se o conteúdo não for um .jff válido ou descrever
+            um autômato inconsistente.
     """
     try:
         raiz = ET.fromstring(jff)
@@ -46,7 +46,11 @@ def converter_jff_para_automato(jff: str) -> AutomatoFinito:
         estado_inicial=_extrair_estado_inicial(estados.values()),
         estados_finais={estado for estado in estados.values() if estado.final},
     )
-    automato.validar()
+    try:
+        automato.validar()
+    except ValueError as erro:
+        raise ErroJFFInvalido(str(erro)) from erro
+
     return automato
 
 

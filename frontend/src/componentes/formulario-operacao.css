@@ -1,6 +1,24 @@
 article.formulario-operacao {
   display: flex;
+  flex-direction: column;
+  background-color: var(--fundo-elevado);
+  padding: var(--espacamento-32) var(--espacamento-48);
+  border-radius: 32px;
+}
+
+.paineis-container {
+  display: flex;
   gap: var(--espacamento-120);
+  padding-bottom: var(--espacamento-16);
+}
+
+.botao-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-top: 2px solid var(--cafe-400);
+  padding-top: var(--espacamento-16);
 }
 
 /* Padroniza os labels (h2) dos botões de painel-importacao e painel-selecao*/

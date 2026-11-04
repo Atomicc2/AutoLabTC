@@ -1,0 +1,38 @@
+.botao-principal button {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  gap:var(--espacamento-16);
+  padding: var(--espacamento-12) var(--espacamento-32);
+  border-radius: 10px;
+  border: 2px solid var(--borda-acento);
+  margin-bottom: var(--espacamento-12);
+  min-width: 275px;
+
+  background-color: var(--caramelo-500);
+  transition-duration: .3s;
+}
+
+.botao-principal button:hover {
+  background-color: var(--caramelo-400);
+  cursor: pointer;
+}
+
+.botao-principal button:disabled {
+  background-color: var(--caramelo-400);
+  cursor: not-allowed;
+}
+
+.botao-principal button span {
+  font-family: var(--fonte-secundaria);
+  font-size: var(--tamanho-18);
+  font-weight: var(--peso-semibold);
+  color: var(--caramelo-900);
+  white-space: nowrap;
+}
+
+.botao-principal button img {
+  width: 26px;
+  height: 25px;
+}
