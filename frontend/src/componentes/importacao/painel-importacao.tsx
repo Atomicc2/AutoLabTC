@@ -27,8 +27,14 @@ function validarArquivo(arquivo: File): string | null {
   return null;
 }
 
-function PainelImportacao() {
-  const [slots, setSlots] = useState<SlotImportacao[]>([criarSlot(), criarSlot()]);
+interface PainelImportacaoProps {
+  quantidadeSlots: number;
+  onArquivoSelecionado?: (arquivo: File | null) => void;
+}
+
+function PainelImportacao({ quantidadeSlots, onArquivoSelecionado }: PainelImportacaoProps) {
+  const slotsIniciais = Array.from({ length: quantidadeSlots }, criarSlot);
+  const [slots, setSlots] = useState<SlotImportacao[]>(slotsIniciais);
 
   function selecionar(
     posicao: number,
@@ -37,7 +43,10 @@ function PainelImportacao() {
     const arquivo = evento.target.files?.[0] ?? null;
     evento.target.value = "";
 
-    if (!arquivo) return;
+    if (!arquivo) {
+      onArquivoSelecionado?.(null);
+      return;
+    }
 
     const erro = validarArquivo(arquivo);
     setSlots((slotsAtuais) =>
@@ -45,6 +54,7 @@ function PainelImportacao() {
         indice === posicao ? { arquivo: erro ? null : arquivo, erro } : slot,
       ),
     );
+    onArquivoSelecionado?.(arquivo);
   }
 
   return (
