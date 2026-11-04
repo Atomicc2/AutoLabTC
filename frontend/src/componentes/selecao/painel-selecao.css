@@ -1,4 +1,74 @@
 /* Implementar CSS */
-.painel-selecao {
-  background-color: var(--fundo-elevado); 
+.painel-selecao h2{
+  color: var(--cafe-50);
+}
+
+.painel-selecao .botao-selecao select{
+  /*mantém a seta no meio*/
+  width: 100%;
+  min-width: 0;
+}
+
+.botao-selecao{
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  min-width: 326px;
+  height: 48px;
+
+  border-radius: 10px;
+  border: 2px solid var(--cafe-600);
+  overflow: hidden;
+
+  background-color: var(--cafe-50);
+}
+
+.botao-selecao::after{
+  content: "";/*para aparecer a parte amarela*/
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50px;
+  height: 100%;
+
+  background-color: var(--caramelo-500);
+  border-left: 2px solid var(--cafe-600);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--tamanho-18);
+  pointer-events: none;
+
+}
+
+.botao-selecao select{
+  position: relative; 
+  z-index: 2;
+  min-width: 275px;
+  height: 52px;
+
+  background: transparent;
+  border: none;
+  outline: none;
+  
+  /*remove a seta padrão do navegador para melhor manipulação*/
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  /* Insere uma seta nova e a posiciona*/
+  background-image: url('../../assets/seta-botao-select.svg');
+  background-repeat: no-repeat;
+  background-position: right 19px center; /*centraliza a setinha*/
+  background-size: 12px;
+
+  padding-left: var(--espacamento-16); /* Espaço para o texto não passar por cima da seta */
+
+  font-family: var(--fonte-secundaria);
+  font-size: var(--tamanho-18);
+  font-weight: var(--peso-semibold);
+  color: var(--texto-sobre-acento);
+  cursor: pointer;
 }
