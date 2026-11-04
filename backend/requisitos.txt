@@ -4,3 +4,4 @@ slowapi
 python-dotenv
 python-multipart
 defusedxml
+pylatex
